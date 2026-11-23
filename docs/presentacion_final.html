@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parnet Ingeniería — Defensa Técnica de Proyecto Final</title>
+<style>
+  :root {
+    --navy: #002b49;
+    --navy-light: #004473;
+    --accent: #0284c7;
+    --sky: #e0f2fe;
+    --amber: #f59e0b;
+    --green: #10b981;
+    --txt: #0f172a;
+    --mut: #475569;
+    --line: #cbd5e1;
+    --bg: #f8fafc;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--txt); font-family: "Segoe UI", system-ui, Roboto, sans-serif; }
+  .slide { display: none; min-height: 100vh; padding: 5vh 7vw 11vh; flex-direction: column; gap: 2.5vh; position: relative; }
+  .slide.on { display: flex; }
+  .slide::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 10px; background: linear-gradient(var(--navy), var(--accent)); }
+  .cover { background: var(--navy); color: #fff; justify-content: center; }
+  .cover::before { background: linear-gradient(var(--accent), #38bdf8); }
+  .cover h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); margin: 0; font-weight: 800; letter-spacing: -0.5px; }
+  .cover p { color: #94a3b8; font-size: clamp(1rem, 1.8vw, 1.3rem); }
+  h2 { font-size: clamp(1.6rem, 3.2vw, 2.4rem); margin: 0; color: var(--navy); font-weight: 800; }
+  .lead { font-size: clamp(.95rem, 1.6vw, 1.25rem); color: var(--mut); margin: -1vh 0 0; }
+  p, li { font-size: clamp(.9rem, 1.4vw, 1.1rem); line-height: 1.6; }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: stretch; }
+  .card { flex: 1; min-width: 240px; background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--accent); border-radius: 10px; padding: 18px 22px; box-shadow: 0 4px 12px rgba(0, 43, 73, 0.06); }
+  .card h3 { margin: 0 0 8px; font-size: clamp(1.05rem, 1.6vw, 1.25rem); color: var(--navy); }
+  .card p { margin: 0; font-size: clamp(.85rem, 1.3vw, 1rem); color: var(--mut); }
+  .card ul { margin: 10px 0 0; padding-left: 18px; color: var(--txt); }
+  .card li { margin-bottom: 6px; font-size: clamp(.85rem, 1.3vw, 0.95rem); }
+  .card code { background: #f1f5f9; color: var(--accent); padding: 2px 6px; border-radius: 4px; font-size: .9em; font-weight: 600; }
+  .c-green { border-top-color: var(--green); }
+  .c-amber { border-top-color: var(--amber); }
+  .c-navy { border-top-color: var(--navy); }
+  .pill { display: inline-block; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; color: #fff; background: var(--accent); margin-right: 6px; }
+  .controls { position: fixed; bottom: 20px; right: 28px; display: flex; gap: 10px; z-index: 100; align-items: center; }
+  .controls button { background: var(--navy); color: #fff; border: none; padding: 9px 18px; border-radius: 8px; cursor: pointer; font-size: .9rem; font-weight: 700; transition: background .2s; }
+  .controls button:hover { background: var(--navy-light); }
+  .counter { font-size: .85rem; color: var(--mut); font-weight: 600; padding: 0 6px; }
+  .table-box { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); font-size: 0.9rem; }
+  .table-box th { background: var(--navy); color: #fff; padding: 10px 14px; text-align: left; }
+  .table-box td { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Portada -->
+<section class="slide cover on">
+  <div style="margin-bottom: 15px;"><span class="pill" style="background:#0284c7;">PROYECTO FINAL INTEGRADOR</span> <span class="pill" style="background:#10b981;">EVALUACIÓN ORDINARIA</span></div>
+  <h1>PARNET INGENIERÍA</h1>
+  <p>Sistema Web Integral de Telecomunicaciones, Fibra Óptica y Cableado Estructurado</p>
+  <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; font-size: 1rem; color: #cbd5e1;">
+    <strong>Equipo de Desarrollo:</strong><br />
+    • <strong>Sebastian Chapa (Chapinguin):</strong> Backend Core, Singleton, ORM Sequelize, REST API y Ficha Técnica PDF<br />
+    • <strong>Frida:</strong> Frontend Portal Público, Mockup PSD, Slider, Formularios CAPTCHA y Multimedia<br />
+    • <strong>Job:</strong> Módulo Administrativo, Auth JWT, CRUD Productos, Visor/Exportador Sugerencias y 2 Dashboards
+  </div>
+</section>
+
+<!-- Slide 2: Requerimientos y Criterios Oficiales -->
+<section class="slide">
+  <h2>1. Requerimientos y Criterios de Evaluación</h2>
+  <p class="lead">Cumplimiento irrestricto de las rúbricas y penalizaciones críticas del docente.</p>
+  <div class="row">
+    <div class="card c-amber">
+      <h3>🛡️ Criterios Críticos de Calificación</h3>
+      <ul>
+        <li><strong>Diagrama de Gantt / Flujo (-50 pts si falta):</strong> Asignaciones y fases operativas sin bloqueos.</li>
+        <li><strong>Documentación 1 al 7 (-5 pts c/u si falta):</strong> Análisis, Arquitectura, BD, POO, Pruebas, Implementación.</li>
+        <li><strong>Prohibición estricta de PHP:</strong> Arquitectura moderna Node.js / Express con clases y POO.</li>
+        <li><strong>Patrón Singleton:</strong> Administrador de conexión a base de datos relacional.</li>
+      </ul>
+    </div>
+    <div class="card c-green">
+      <h3>⭐ Requisitos Funcionales Clave</h3>
+      <ul>
+        <li><strong>Mockup PSD & Slider:</strong> Interfaz responsiva idéntica a <code>Redes_y_Telecomunicaciones.psd</code>.</li>
+        <li><strong>Ficha Técnica en PDF:</strong> Descarga dinámica con especificaciones del producto.</li>
+        <li><strong>Control CAPTCHA:</strong> En Solicitud de Servicios por área y en Buzón de Sugerencias internas.</li>
+        <li><strong>Exportación:</strong> Sugerencias exportables a Excel (.xlsx) y PDF paginados.</li>
+        <li><strong>2 Dashboards BI:</strong> Gráficos de servicios por área y distribución de catálogo.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 3: Arquitectura y Patrones de Diseño -->
+<section class="slide">
+  <h2>2. Diseño y Arquitectura de Software</h2>
+  <p class="lead">Desacoplamiento total Monorepo con Backend MVC Orientado a Objetos y Frontend React SPA.</p>
+  <div class="row">
+    <div class="card c-navy">
+      <h3>🏛️ Capa de Presentación (Frontend)</h3>
+      <p>React 18 + Vite con arquitectura SPA responsiva.</p>
+      <ul>
+        <li>Ruteo modular con <code>react-router-dom</code> y guardias privadas (<code>ProtectedRoute</code>).</li>
+        <li>Consumo de API centralizado con Axios e interceptores JWT.</li>
+        <li>Visualización gráfica en tiempo real con <code>Chart.js</code>.</li>
+        <li>Componente reactivo de CAPTCHA con recarga dinámica sin refresco de página.</li>
+      </ul>
+    </div>
+    <div class="card c-navy">
+      <h3>⚙️ Capa de Servicios y Negocio (Backend)</h3>
+      <p>Node.js con Express estructurado en MVC y POO estricto.</p>
+      <ul>
+        <li><strong>Patrón Singleton:</strong> Clase <code>DatabaseConnection</code> para conexión única de ORM Sequelize.</li>
+        <li><strong>Capa de Servicios:</strong> <code>PdfService</code>, <code>ExcelService</code>, <code>CaptchaService</code>.</li>
+        <li>Autenticación por tokens criptográficos <code>jsonwebtoken</code> (JWT) y hash <code>bcryptjs</code>.</li>
+        <li>Persistencia relacional portátil (SQLite) que no requiere configuraciones externas en la entrega ZIP.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 4: Modelo de Datos Relacional -->
+<section class="slide">
+  <h2>3. Modelo Físico de Base de Datos</h2>
+  <p class="lead">Persistencia mediante ORM Sequelize con integridad relacional y migraciones/seeders.</p>
+  <table class="table-box">
+    <thead>
+      <tr>
+        <th>Tabla / Modelo</th>
+        <th>Campos Clave</th>
+        <th>Propósito en el Negocio</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>usuarios</strong></td>
+        <td>id, username, password (bcrypt), email, rol</td>
+        <td>Control de acceso privado a administradores.</td>
+      </tr>
+      <tr>
+        <td><strong>productos</strong></td>
+        <td>id, codigo, nombre, categoria, precio, imagen_url, estatus</td>
+        <td>Catálogo de telecomunicaciones y generación de Ficha PDF.</td>
+      </tr>
+      <tr>
+        <td><strong>servicios_solicitudes</strong></td>
+        <td>id, folio, cliente_nombre, email, area, detalle, estatus</td>
+        <td>Solicitud técnica por área con CAPTCHA para Dashboard 1.</td>
+      </tr>
+      <tr>
+        <td><strong>sugerencias</strong></td>
+        <td>id, nombre, email, mensaje, created_at</td>
+        <td>Buzón interno con CAPTCHA, paginación y exportación Excel/PDF.</td>
+      </tr>
+      <tr>
+        <td><strong>noticias</strong></td>
+        <td>id, titulo, contenido, categoria, activo</td>
+        <td>Tablero dinámico de novedades en el portal público.</td>
+      </tr>
+      <tr>
+        <td><strong>visitas</strong></td>
+        <td>id, ip, userAgent, ruta, created_at</td>
+        <td>Contador en vivo de visitas y usuarios conectados concurrentes.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Slide 5: Suites de Pruebas Automatizadas -->
+<section class="slide">
+  <h2>4. Verificación de Calidad y Pruebas</h2>
+  <p class="lead">Evidencia verificable del cumplimiento del Punto 5 de la rúbrica.</p>
+  <div class="row">
+    <div class="card c-green">
+      <h3>🧪 Suite de Flujo: <code>npm run test:flow</code></h3>
+      <ul>
+        <li>✅ Conexión Singleton autenticada exitosamente.</li>
+        <li>✅ Búsqueda y filtrado de catálogo de productos verificado.</li>
+        <li>✅ Generación y validación temporal de tokens antibot CAPTCHA.</li>
+        <li>✅ Registro transaccional de solicitudes de servicio con asignación de folio.</li>
+        <li>✅ Generación binaria y maquetación de la Ficha Técnica oficial en PDF.</li>
+      </ul>
+    </div>
+    <div class="card c-amber">
+      <h3>🔒 Suite de Seguridad: <code>npm run test:security</code></h3>
+      <ul>
+        <li>✅ Cifrado irreversible con <code>bcrypt</code> verificado para cuenta admin.</li>
+        <li>✅ Rechazo garantizado ante contraseñas inválidas.</li>
+        <li>✅ Emisión, firma criptográfica y decodificación de tokens JWT.</li>
+        <li>✅ Detección y rechazo de tokens adulterados o expirados.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 6: Demostración en Vivo y Conclusión -->
+<section class="slide cover" style="text-align: center; justify-content: center; align-items: center;">
+  <h2>Demostración en Vivo del Sistema</h2>
+  <p style="max-width: 650px; margin: 15px auto 25px; color: #cbd5e1;">
+    Revisión de flujo público (Slider, Ficha PDF, CAPTCHAs, Video) y privado (Login, 2 Dashboards Chart.js, CRUD de productos y exportación de sugerencias a Excel y PDF).
+  </p>
+  <div style="background: rgba(255,255,255,0.1); padding: 18px 28px; border-radius: 10px; display: inline-block;">
+    <strong>Credenciales para Validación del Docente:</strong><br />
+    Usuario: <code>admin</code> · Contraseña: <code>AdminParnet2026!</code>
+  </div>
+</section>
+
+<!-- Controles de Navegación -->
+<div class="controls">
+  <button id="btnPrev">← Anterior</button>
+  <span class="counter" id="lblSlide">1 / 6</span>
+  <button id="btnNext">Siguiente →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let idx = 0;
+  const lbl = document.getElementById('lblSlide');
+
+  function show(n) {
+    slides[idx].classList.remove('on');
+    idx = (n + slides.length) % slides.length;
+    slides[idx].classList.add('on');
+    lbl.textContent = (idx + 1) + ' / ' + slides.length;
+  }
+
+  document.getElementById('btnPrev').addEventListener('click', () => show(idx - 1));
+  document.getElementById('btnNext').addEventListener('click', () => show(idx + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') show(idx + 1);
+    if (e.key === 'ArrowLeft') show(idx - 1);
+  });
+</script>
+</body>
+</html>
