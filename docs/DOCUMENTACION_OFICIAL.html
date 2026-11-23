@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>PARNET INGENIERÍA — Documento Técnico Oficial de Proyecto Integrador</title>
+<style>
+  @page {
+    size: letter;
+    margin: 2.2cm 2cm 2.2cm 2cm;
+    @bottom-center {
+      content: "Página " counter(page);
+      font-size: 9pt;
+      color: #64748b;
+    }
+  }
+  
+  body {
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.6;
+    font-size: 10.5pt;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  /* Portada Formal */
+  .portada {
+    page-break-after: always;
+    text-align: center;
+    padding-top: 6cm;
+    min-height: 22cm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .portada-header {
+    border-bottom: 3px solid #002b49;
+    padding-bottom: 1.5cm;
+  }
+
+  .portada-univ {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #002b49;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.2cm;
+  }
+
+  .portada-facultad {
+    font-size: 12pt;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.8cm;
+  }
+
+  .portada-title {
+    font-size: 26pt;
+    font-weight: 900;
+    color: #002b49;
+    margin: 0.8cm 0 0.3cm;
+    line-height: 1.15;
+  }
+
+  .portada-subtitle {
+    font-size: 13pt;
+    color: #0284c7;
+    font-weight: 600;
+  }
+
+  .portada-datos {
+    margin-top: 3cm;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 1.5cm;
+    display: flex;
+    justify-content: space-around;
+    text-align: left;
+  }
+
+  .dato-bloque {
+    font-size: 10pt;
+  }
+
+  .dato-label {
+    font-weight: 700;
+    color: #002b49;
+    text-transform: uppercase;
+    font-size: 8.5pt;
+    letter-spacing: 0.5px;
+  }
+
+  .dato-valor {
+    color: #334155;
+    margin-top: 2px;
+  }
+
+  /* Encabezados y Secciones */
+  h1 {
+    font-size: 18pt;
+    color: #002b49;
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 0.3cm;
+    margin-top: 1.2cm;
+    page-break-before: always;
+  }
+
+  h1:first-of-type {
+    page-break-before: avoid;
+  }
+
+  h2 {
+    font-size: 13pt;
+    color: #002b49;
+    margin-top: 0.8cm;
+    margin-bottom: 0.3cm;
+    border-left: 4px solid #0284c7;
+    padding-left: 0.3cm;
+  }
+
+  h3 {
+    font-size: 11pt;
+    color: #1e293b;
+    margin-top: 0.5cm;
+  }
+
+  p {
+    margin: 0.3cm 0;
+    text-align: justify;
+  }
+
+  ul, ol {
+    margin: 0.3cm 0;
+    padding-left: 0.8cm;
+  }
+
+  li {
+    margin-bottom: 0.15cm;
+  }
+
+  /* Tablas estilizadas */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5cm 0;
+    font-size: 9.5pt;
+  }
+
+  th {
+    background: #002b49;
+    color: #ffffff;
+    font-weight: 700;
+    text-align: left;
+    padding: 0.25cm 0.3cm;
+    border: 1px solid #002b49;
+  }
+
+  td {
+    padding: 0.25cm 0.3cm;
+    border: 1px solid #cbd5e1;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  /* Cajas de notas y códigos */
+  .callout {
+    background: #f0f9ff;
+    border-left: 4px solid #0284c7;
+    padding: 0.3cm 0.5cm;
+    margin: 0.4cm 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 9.5pt;
+  }
+
+  code {
+    background: #f1f5f9;
+    color: #002b49;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9pt;
+  }
+
+  pre {
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 0.4cm;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 8.5pt;
+    line-height: 1.4;
+  }
+
+  .badge-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    background: #dcfce7;
+    color: #166534;
+  }
+</style>
+</head>
+<body>
+
+<!-- PORTADA OFICIAL -->
+<div class="portada">
+  <div class="portada-header">
+    <div class="portada-univ">Universidad Autónoma de Coahuila</div>
+    <div class="portada-facultad">Facultad de Sistemas · Unidad Saltillo</div>
+    <div class="portada-title">PARNET INGENIERÍA</div>
+    <div class="portada-subtitle">Sistema Web Integral de Telecomunicaciones, Fibra Óptica y Cableado Estructurado</div>
+    <p style="text-align: center; color: #64748b; font-size: 10pt; margin-top: 0.4cm;">
+      Documentación Técnica del Proyecto Integrador — Evaluación Ordinaria
+    </p>
+  </div>
+
+  <div class="portada-datos">
+    <div class="dato-bloque">
+      <div class="dato-label">Equipo de Desarrollo</div>
+      <div class="dato-valor">
+        • <strong>Sebastian Chapa</strong> (Usuario: Chapinguin)<br>
+        • <strong>Frida</strong> (Colaboradora)<br>
+        • <strong>Job</strong> (Colaborador)
+      </div>
+    </div>
+    <div class="dato-bloque">
+      <div class="dato-label">Materia & Semestre</div>
+      <div class="dato-valor">
+        Desarrollo de Software Web<br>
+        Semestre Agosto – Diciembre 2026
+      </div>
+    </div>
+    <div class="dato-bloque">
+      <div class="dato-label">Ubicación y Fecha</div>
+      <div class="dato-valor">
+        Saltillo, Coahuila<br>
+        Noviembre 2026
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PUNTO 1 -->
+<h1>1. Análisis de Requerimientos (-5 pts no entregarlo)</h1>
+<p>
+  El presente proyecto consiste en el análisis, diseño e implementación de la plataforma web empresarial denominada <strong>"Parnet Ingeniería"</strong>. El sistema responde a la necesidad de dotar a una empresa de infraestructura tecnológica de un canal digital público que integre medios multimedia (video, audio, galerías optimizadas), descarga de especificaciones técnicas en PDF, canales seguros de contacto y solicitud de servicios con validación antibot (CAPTCHA), así como un módulo administrativo privado para mantenimiento de inventarios y analítica de datos en tiempo real.
+</p>
+
+<h2>1.1 Requerimientos Funcionales Obligatorios</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 15%;">Código</th>
+      <th style="width: 35%;">Requerimiento</th>
+      <th>Descripción y Criterio de Aceptación</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>RF-01</strong></td>
+      <td>Diseño acorde al Mockup Photoshop</td>
+      <td>El portal reproduce fielmente la paleta de colores, disposición y tipografía del archivo <code>Redes_y_Telecomunicaciones.psd</code> (1280px).</td>
+    </tr>
+    <tr>
+      <td><strong>RF-02</strong></td>
+      <td>Slider de Cabecera</td>
+      <td>Carrusel animado e interactivo con promociones de fibra óptica, cableado y redes.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-03</strong></td>
+      <td>Buscador de Productos</td>
+      <td>Búsqueda reactiva por texto en vivo, filtrable por categoría tecnológica.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-04</strong></td>
+      <td>Ficha Técnica en PDF</td>
+      <td>Generación dinámica en servidor de archivo PDF con logotipo, metadatos, especificaciones y estatus de inventario.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-05</strong></td>
+      <td>Solicitud de Servicios con CAPTCHA</td>
+      <td>Formulario para cotizaciones por áreas (Redes, Fibra, Cableado) protegido por reto antibot generado en servidor.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-06</strong></td>
+      <td>Buzón de Sugerencias con CAPTCHA</td>
+      <td>Registro directo a tabla interna de base de datos protegida con CAPTCHA alfanumérico.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-07</strong></td>
+      <td>Exportación Excel y PDF</td>
+      <td>Módulo admin para consultar sugerencias con paginación y botones de exportación a <code>.xlsx</code> y <code>.pdf</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-08</strong></td>
+      <td>Formulario de Contacto</td>
+      <td>Envío institucional de mensajes por correo electrónico.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-09</strong></td>
+      <td>Módulo Multimedia</td>
+      <td>Incrustación de Video institucional de 2 a 4 minutos y reproductor de Audio con consejos técnicos.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-10</strong></td>
+      <td>Mantenimiento de Productos (CRUD)</td>
+      <td>Zona privada protegida para dar de alta, editar, eliminar y cambiar estatus (Existencia/Agotado).</td>
+    </tr>
+    <tr>
+      <td><strong>RF-11</strong></td>
+      <td>2 Dashboards con Gráficos</td>
+      <td>Dashboard 1: Servicios registrados por área. Dashboard 2: Productos registrados por categoría en catálogo.</td>
+    </tr>
+    <tr>
+      <td><strong>RF-12</strong></td>
+      <td>Contador de Visitas</td>
+      <td>Contador persistente de accesos y estimación de usuarios conectados concurrentes en tiempo real.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>1.2 Restricciones Técnicas Oficiales de la Rúbrica</h2>
+<ul>
+  <li><strong>Prohibición estricta de PHP:</strong> Backend desarrollado en Node.js y Express con módulos ESM.</li>
+  <li><strong>Paradigma Orientado a Objetos (POO):</strong> Modelos y servicios implementados con clases y encapsulamiento.</li>
+  <li><strong>Patrón de Diseño Singleton:</strong> Conexión única y compartida de la base de datos relacional.</li>
+  <li><strong>ORM Obligatorio:</strong> Sequelize para abstracción y consistencia de datos relacionales.</li>
+</ul>
+
+<!-- PUNTO 2 -->
+<h1>2. Diseño y Arquitectura de Software (-5 pts no entregarlo)</h1>
+<p>
+  Se seleccionó una <strong>Arquitectura Monorepo Desacoplada</strong> que separa estrictamente la capa de presentación de la capa de servicios y reglas de negocio, comunicándose mediante una <strong>API REST</strong> estructurada en formato JSON.
+</p>
+
+<h2>2.1 Diagrama de Arquitectura de Capas</h2>
+<pre>
+┌────────────────────────────────────────────────────────────────────────┐
+│                        CAPA DE PRESENTACIÓN (SPA)                      │
+│        React 18 + Vite · Router DOM · Chart.js · CSS Responsivo        │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Peticiones HTTP / JSON (Axios)
+┌───────────────────────────────────▼────────────────────────────────────┐
+│                    CAPA DE SERVICIOS Y NEGOCIO (BACKEND)               │
+│  ├── Controladores REST (/api/productos, /auth, /servicios, etc.)      │
+│  ├── Middlewares de Seguridad (authMiddleware JWT, validación CAPTCHA) │
+│  └── Servicios POO (PdfService, ExcelService, CaptchaService)          │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Instancia Única (Patrón Singleton)
+┌───────────────────────────────────▼────────────────────────────────────┐
+│                       CAPA DE PERSISTENCIA (ORM)                       │
+│    Sequelize ORM · SQLite Relacional (Portable para entrega en ZIP)    │
+└────────────────────────────────────────────────────────────────────────┘
+</pre>
+
+<h2>2.2 Implementación del Patrón de Diseño Creacional: SINGLETON</h2>
+<p>
+  Para dar cumplimiento a la rúbrica oficial de 5 puntos correspondiente al patrón Singleton, se implementó la clase <code>DatabaseConnection</code> en el archivo <code>backend/src/config/Database.js</code>. Este patrón garantiza que toda la aplicación comparta una única instancia del motor de base de datos Sequelize, evitando fugas de memoria o saturación de sockets de conexión:
+</p>
+<pre>
+class DatabaseConnection {
+  constructor() {
+    if (DatabaseConnection.instance) {
+      return DatabaseConnection.instance;
+    }
+    this.sequelize = new Sequelize({
+      dialect: 'sqlite',
+      storage: process.env.DB_STORAGE || './database.sqlite',
+      logging: false
+    });
+    DatabaseConnection.instance = this;
+  }
+
+  getSequelize() {
+    return this.sequelize;
+  }
+}
+
+const databaseConnectionInstance = new DatabaseConnection();
+export default databaseConnectionInstance;
+</pre>
+
+<!-- PUNTO 3 -->
+<h1>3. Modelo Físico de la Base de Datos (-5 pts no entregarlo)</h1>
+<p>
+  El esquema relacional fue construido mediante el ORM Sequelize con tipos de datos estrictos, llaves primarias autoincrementales y soporte de auditoría temporal (<code>created_at</code>, <code>updated_at</code>).
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tabla</th>
+      <th>Campo</th>
+      <th>Tipo de Dato</th>
+      <th>Restricciones</th>
+      <th>Descripción de Negocio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="4"><strong>usuarios</strong></td>
+      <td><code>id</code></td>
+      <td>INTEGER</td>
+      <td>PK, Auto Increment</td>
+      <td>Identificador único del administrador.</td>
+    </tr>
+    <tr>
+      <td><code>username</code></td>
+      <td>VARCHAR(50)</td>
+      <td>NOT NULL, UNIQUE</td>
+      <td>Nombre de usuario único para login.</td>
+    </tr>
+    <tr>
+      <td><code>password</code></td>
+      <td>VARCHAR(255)</td>
+      <td>NOT NULL</td>
+      <td>Contraseña con cifrado irreversible Bcrypt.</td>
+    </tr>
+    <tr>
+      <td><code>rol</code></td>
+      <td>VARCHAR(20)</td>
+      <td>DEFAULT 'ADMIN'</td>
+      <td>Rol de acceso al panel privado.</td>
+    </tr>
+    <tr>
+      <td rowspan="6"><strong>productos</strong></td>
+      <td><code>id</code></td>
+      <td>INTEGER</td>
+      <td>PK, Auto Increment</td>
+      <td>Identificador del producto.</td>
+    </tr>
+    <tr>
+      <td><code>codigo</code></td>
+      <td>VARCHAR(50)</td>
+      <td>NOT NULL, UNIQUE</td>
+      <td>Código comercial de catálogo.</td>
+    </tr>
+    <tr>
+      <td><code>nombre</code></td>
+      <td>VARCHAR(150)</td>
+      <td>NOT NULL</td>
+      <td>Nombre comercial de la solución.</td>
+    </tr>
+    <tr>
+      <td><code>categoria</code></td>
+      <td>VARCHAR(80)</td>
+      <td>NOT NULL</td>
+      <td>Cableado, Fibra, Redes, Telefonía, etc.</td>
+    </tr>
+    <tr>
+      <td><code>precio</code></td>
+      <td>DECIMAL(10,2)</td>
+      <td>NOT NULL</td>
+      <td>Precio de lista en moneda nacional.</td>
+    </tr>
+    <tr>
+      <td><code>estatus</code></td>
+      <td>ENUM</td>
+      <td>'Existencia', 'Agotado'</td>
+      <td>Disponibilidad de inventario.</td>
+    </tr>
+    <tr>
+      <td rowspan="5"><strong>servicios_solicitudes</strong></td>
+      <td><code>id</code></td>
+      <td>INTEGER</td>
+      <td>PK, Auto Increment</td>
+      <td>ID de la solicitud.</td>
+    </tr>
+    <tr>
+      <td><code>folio</code></td>
+      <td>VARCHAR(30)</td>
+      <td>NOT NULL, UNIQUE</td>
+      <td>Folio único de seguimiento.</td>
+    </tr>
+    <tr>
+      <td><code>cliente_nombre</code></td>
+      <td>VARCHAR(120)</td>
+      <td>NOT NULL</td>
+      <td>Nombre del solicitante o ingeniero.</td>
+    </tr>
+    <tr>
+      <td><code>area</code></td>
+      <td>VARCHAR(80)</td>
+      <td>NOT NULL</td>
+      <td>Área técnica para Dashboard 1.</td>
+    </tr>
+    <tr>
+      <td><code>estatus</code></td>
+      <td>ENUM</td>
+      <td>'Pendiente', 'Resuelto'</td>
+      <td>Estado de atención del requerimiento.</td>
+    </tr>
+    <tr>
+      <td rowspan="3"><strong>sugerencias</strong></td>
+      <td><code>id</code></td>
+      <td>INTEGER</td>
+      <td>PK, Auto Increment</td>
+      <td>ID de la sugerencia interna.</td>
+    </tr>
+    <tr>
+      <td><code>nombre / email</code></td>
+      <td>VARCHAR(100)</td>
+      <td>NOT NULL</td>
+      <td>Remitente de la sugerencia.</td>
+    </tr>
+    <tr>
+      <td><code>mensaje</code></td>
+      <td>TEXT</td>
+      <td>NOT NULL</td>
+      <td>Contenido textual exportable a Excel/PDF.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- PUNTO 4 -->
+<h1>4. Programación y Buenas Prácticas (POO) (-5 pts no entregarlo)</h1>
+<p>
+  La base de código se diseñó siguiendo los principios de la Programación Orientada a Objetos (POO): <strong>encapsulamiento</strong>, <strong>responsabilidad única</strong> y <strong>modularidad</strong>.
+</p>
+
+<h2>4.1 Servicios Desacoplados</h2>
+<ul>
+  <li><code>PdfService</code>: Encapsula la lógica de maquetación vectorial en <code>PDFKit</code> para emitir fichas técnicas profesionales con encabezados institucionales, paleta corporativa y pie de página.</li>
+  <li><code>ExcelService</code>: Encapsula la librería <code>ExcelJS</code> para dar estilo formal a los reportes de sugerencias con celdas de encabezado con color de marca y anchos automáticos.</li>
+  <li><code>CaptchaService</code>: Clase gestora de retos antibot con expiración automática periódica cada 10 minutos.</li>
+</ul>
+
+<h2>4.2 Estructura del Proyecto Monorepo</h2>
+<pre>
+Final-Parnet/
+├── backend/
+│   ├── src/
+│   │   ├── config/ (Singleton Database.js)
+│   │   ├── controllers/ (auth, productos, servicios, sugerencias, etc.)
+│   │   ├── database/ (seeders.js con datos iniciales)
+│   │   ├── middlewares/ (authMiddleware.js)
+│   │   ├── models/ (Usuario, Producto, ServicioSolicitud, etc.)
+│   │   ├── routes/ (index.js y submódulos REST)
+│   │   ├── services/ (PdfService, ExcelService, CaptchaService)
+│   │   ├── tests/ (test_flow.js, test_security.js)
+│   │   └── server.js
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── components/ (Navbar, Footer, Slider, CaptchaInput, ProtectedRoute)
+│   │   ├── pages/ (Home, Servicios, Productos, Clientes, Contacto, Admin...)
+│   │   ├── services/ (api.js con interceptor JWT)
+│   │   └── styles/ (main.css fiel a Redes_y_Telecomunicaciones.psd)
+│   └── package.json
+├── docs/ (DOCUMENTACION_OFICIAL.html, CONTRATO_API.md, presentacion_final.html)
+└── scripts/ (empaquetar.sh)
+</pre>
+
+<!-- PUNTO 5 -->
+<h1>5. Pruebas de Software (-5 pts no entregarlo)</h1>
+<p>
+  El sistema integra dos suites de pruebas automatizadas que se ejecutan directamente en consola, verificando la integridad de la base de datos, los servicios y la seguridad criptográfica:
+</p>
+
+<h2>5.1 Suite de Flujo Funcional (<code>npm run test:flow</code>)</h2>
+<div class="callout">
+  <strong>Resultado de la ejecución:</strong>
+  <ul>
+    <li>✅ Conexión Singleton autenticada exitosamente contra SQLite.</li>
+    <li>✅ Búsqueda y filtrado de catálogo de productos verificado (Cableado, Fibra, Switches).</li>
+    <li>✅ Generación de reto gráfico SVG y validación de coincidencia de token CAPTCHA.</li>
+    <li>✅ Registro transaccional de solicitud de servicio técnico con asignación de folio único.</li>
+    <li>✅ Generación binaria y maquetación de la Ficha Técnica PDF verificada.</li>
+  </ul>
+</div>
+
+<h2>5.2 Suite de Seguridad y Autenticación (<code>npm run test:security</code>)</h2>
+<div class="callout">
+  <strong>Resultado de la ejecución:</strong>
+  <ul>
+    <li>✅ Verificación de contraseñas mediante algoritmo unidireccional <code>bcrypt</code>.</li>
+    <li>✅ Rechazo garantizado ante contraseñas inválidas.</li>
+    <li>✅ Emisión, firma criptográfica y decodificación de tokens de sesión <code>jsonwebtoken</code> (JWT).</li>
+    <li>✅ Detección y rechazo inmediato de tokens manipulados o alterados.</li>
+  </ul>
+</div>
+
+<!-- PUNTO 6 -->
+<h1>6. Implementación y Despliegue (-5 pts no entregarlo)</h1>
+<h2>6.1 Puesta en Marcha Local</h2>
+<p>
+  El sistema fue concebido para una ejecución inmediata y sin fricciones por parte del docente evaluador:
+</p>
+<pre>
+# Terminal 1: Backend API REST
+cd backend
+npm install
+npm run seed              # Crea la base de datos SQLite y carga datos de prueba
+npm run dev               # Servidor activo en http://localhost:4000
+
+# Terminal 2: Frontend SPA
+cd frontend
+npm install
+npm run dev               # Portal web activo en http://localhost:5173
+</pre>
+
+<h2>6.2 Credenciales para Evaluación Presencial</h2>
+<p>
+  El sistema se inicializa automáticamente con la cuenta administrativa de evaluación:
+  <br>• <strong>URL de Acceso:</strong> <code>http://localhost:5173/admin/login</code>
+  <br>• <strong>Usuario:</strong> <code>admin</code>
+  <br>• <strong>Contraseña:</strong> <code>AdminParnet2026!</code>
+</p>
+
+<h2>6.3 Empaquetado Limpio para Asignación de Teams (ZIP)</h2>
+<p>
+  Se provee el script ejecutable <code>scripts/empaquetar.sh</code> que empaqueta automáticamente todo el código fuente excluyendo las carpetas pesadas de <code>node_modules/</code>, compilados y archivos <code>.env</code>.
+</p>
+
+<!-- PUNTO 7 -->
+<h1>7. Diagrama de Gantt y Asignación de Tareas (-50 pts no entregarlo)</h1>
+<p>
+  Para dar cumplimiento estricto al <strong>Punto 7 de la rúbrica oficial (-50 puntos si falta)</strong>, se presenta la matriz de responsabilidades y flujo de avance funcional por etapas entre los tres desarrolladores:
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 20%;">Fase / Etapa</th>
+      <th style="width: 27%;">Sebastian Chapa (chapabranch)</th>
+      <th style="width: 27%;">Frida (fridabranch)</th>
+      <th style="width: 26%;">Job (jobbranch)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Fase 1: Cimientos y Arquitectura</strong></td>
+      <td>• Setup monorepo y .gitignore.<br>• Singleton de BD Sequelize.<br>• Modelos ORM y Seeders.<br>• Contrato de API REST.</td>
+      <td>• Maquetación base en React.<br>• Estructura de navegación.<br>• Paleta institucional PSD.<br>• Componente Slider de inicio.</td>
+      <td>• Diseño de flujo de login admin.<br>• Guardia de rutas privadas.<br>• Pantalla de autenticación.<br>• Componente Login UI.</td>
+    </tr>
+    <tr>
+      <td><strong>Fase 2: Módulos Operacionales</strong></td>
+      <td>• Endpoints REST de Productos.<br>• Servicio de Ficha Técnica PDF.<br>• Endpoints de Sugerencias y CAPTCHA.<br>• Servicio de solicitud de servicio.</td>
+      <td>• Catálogo público de productos.<br>• Formulario de sugerencias.<br>• Formulario de servicios por área.<br>• Formulario de contacto email.</td>
+      <td>• CRUD de catálogo de productos.<br>• Pantalla de sugerencias.<br>• Control de estatus de stock.<br>• Gestión de imágenes.</td>
+    </tr>
+    <tr>
+      <td><strong>Fase 3: Analítica y Multimedia</strong></td>
+      <td>• Contador de visitas en vivo.<br>• Endpoints para Dashboards BI.<br>• Servicio exportador a Excel.</td>
+      <td>• Integración Video (2-4 min).<br>• Reproductor de Audio técnico.<br>• Sección de clientes con links.<br>• Tablero dinámico de noticias.</td>
+      <td>• Exportación Excel y PDF.<br>• Dashboard 1 (Servicios).<br>• Dashboard 2 (Catálogo).<br>• Reporte general de stock.</td>
+    </tr>
+    <tr>
+      <td><strong>Fase 4: Integración y Cierre</strong></td>
+      <td>• Suites automatizadas de test.<br>• Script de empaquetado ZIP.<br>• Documentación técnica 1 al 7.</td>
+      <td>• Verificación responsiva móvil.<br>• Pruebas cross-browser.<br>• Validación de formularios.</td>
+      <td>• Pruebas de flujos admin.<br>• Cierre de sesión y seguridad.<br>• Ensayos de exposición.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="margin-top: 1.5cm; text-align: center; color: #64748b; font-size: 9pt; border-top: 1px solid #e2e8f0; padding-top: 0.5cm;">
+  Documento generado para la entrega final de <strong>Parnet Ingeniería</strong> · Universidad Autónoma de Coahuila · Facultad de Sistemas
+</p>
+
+</body>
+</html>
