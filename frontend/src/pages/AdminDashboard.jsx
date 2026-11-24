@@ -12,7 +12,7 @@ import {
   ArcElement
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { Package, MessageSquareText, Activity, ShieldCheck } from 'lucide-react';
+import { Package, MessageSquareText, Newspaper, ShieldCheck } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -63,12 +63,15 @@ export default function AdminDashboard() {
           <p style={{ color: '#475569' }}>Métricas en tiempo real, control de catálogos y reportes para Parnet Ingeniería.</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.8rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.8rem' }}>
           <Link to="/admin/productos" className="btn btn-navy">
             <Package size={16} /> Mantenimiento de Productos
           </Link>
           <Link to="/admin/sugerencias" className="btn btn-primary">
             <MessageSquareText size={16} /> Ver Sugerencias
+          </Link>
+          <Link to="/admin/noticias" className="btn btn-outline">
+            <Newspaper size={16} /> Publicar Noticias
           </Link>
         </div>
       </div>
