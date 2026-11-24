@@ -30,6 +30,7 @@ export default function Footer() {
           <p>Dirección: Saltillo, Coahuila, México</p>
           <p>Correo: contacto@parnet.com.mx</p>
           <p>Teléfono: (844) 415-8890</p>
+          <a href="/servicios">Solicitar una asesoría técnica →</a>
         </div>
       </div>
 

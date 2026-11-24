@@ -19,11 +19,11 @@ apiRouter.use('/captcha', captchaRoutes);
 
 // Endpoint de contacto general por correo simulado
 apiRouter.post('/contacto', (req, res) => {
-  const { nombre, email, asunto, mensaje } = req.body;
-  if (!nombre || !email || !mensaje) {
+  const { nombre, email, telefono, asunto, mensaje } = req.body;
+  if (!nombre || !email || !telefono || !mensaje) {
     return res.status(400).json({ message: 'Todos los campos son requeridos.' });
   }
-  console.log(`📧 [Contacto Email Recibido] De: ${nombre} (${email}) | Asunto: ${asunto} | Mensaje: ${mensaje}`);
+  console.log(`📧 [Contacto Email Recibido] De: ${nombre} (${email}, ${telefono}) | Asunto: ${asunto} | Mensaje: ${mensaje}`);
   return res.json({
     success: true,
     message: 'Mensaje de contacto enviado con éxito al departamento de atención al cliente.'
