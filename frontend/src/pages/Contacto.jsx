@@ -1,26 +1,31 @@
 import React, { useState } from 'react';
 import api from '../services/api';
-import { Mail, CheckCircle, Send } from 'lucide-react';
+import { Mail, CheckCircle, Send, AlertCircle, Phone } from 'lucide-react';
 
 export default function Contacto() {
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
+    telefono: '',
     asunto: '',
     mensaje: ''
   });
   const [enviado, setEnviado] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
+    setEnviado(false);
     try {
       await api.post('/contacto', formData);
       setEnviado(true);
-      setFormData({ nombre: '', email: '', asunto: '', mensaje: '' });
+      setFormData({ nombre: '', email: '', telefono: '', asunto: '', mensaje: '' });
     } catch (err) {
       console.error('Error al enviar mensaje de contacto:', err);
+      setError(err.response?.data?.message || 'No fue posible enviar tu mensaje. Intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -29,7 +34,7 @@ export default function Contacto() {
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '2rem', color: '#002b49', fontWeight: 800 }}>Contacto por Correo Electrónico</h2>
+          <h2 style={{ fontSize: '2rem', color: '#002b49', fontWeight: 800 }}>Hablemos de tu proyecto</h2>
         <p style={{ color: '#475569' }}>
           Envíenos su mensaje directamente. Nuestro departamento de atención le responderá a la brevedad.
         </p>
@@ -42,6 +47,7 @@ export default function Contacto() {
             <span>Su mensaje ha sido enviado exitosamente a la bandeja de contacto de PARNET Ingeniería.</span>
           </div>
         )}
+        {error && <div className="form-feedback form-feedback-error" role="alert"><AlertCircle size={18} />{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -66,6 +72,11 @@ export default function Contacto() {
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="laura@empresa.com"
             />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label"><Phone size={14} /> Teléfono de contacto *</label>
+            <input type="tel" className="form-input" required minLength={7} maxLength={20} value={formData.telefono} onChange={(e) => setFormData({ ...formData, telefono: e.target.value })} placeholder="(844) 123-4567" />
           </div>
 
           <div className="form-group">

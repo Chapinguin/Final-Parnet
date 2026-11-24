@@ -7,26 +7,30 @@ export default function Productos() {
   const [search, setSearch] = useState('');
   const [categoria, setCategoria] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const fetchProductos = async () => {
     try {
       setLoading(true);
       const params = {};
-      if (search) params.search = search;
+      if (search.trim()) params.search = search.trim();
       if (categoria) params.categoria = categoria;
 
       const res = await api.get('/productos', { params });
       setProductos(res.data);
+      setError('');
     } catch (err) {
       console.error('Error obteniendo productos:', err);
+      setError('No pudimos cargar el catálogo. Intenta de nuevo en unos momentos.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchProductos();
-  }, [categoria]);
+    const timer = window.setTimeout(fetchProductos, 250);
+    return () => window.clearTimeout(timer);
+  }, [categoria, search]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -48,7 +52,7 @@ export default function Productos() {
 
       {/* Barra de Búsqueda y Filtros */}
       <div style={{ background: '#f1f5f9', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem' }}>
-        <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        <form onSubmit={handleSearchSubmit} className="catalog-search">
           <div style={{ flex: 1, minWidth: '240px', position: 'relative' }}>
             <input
               type="text"
@@ -81,7 +85,9 @@ export default function Productos() {
       </div>
 
       {/* Rejilla de Productos */}
-      {loading ? (
+      {error ? (
+        <div className="empty-state" role="alert">{error}</div>
+      ) : loading ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>Cargando catálogo...</div>
       ) : productos.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>
@@ -90,8 +96,8 @@ export default function Productos() {
       ) : (
         <div className="grid-cards">
           {productos.map((prod) => (
-            <div key={prod.id} className="card" style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ height: '170px', borderRadius: '6px', overflow: 'hidden', marginBottom: '1rem', background: '#f8fafc' }}>
+            <div key={prod.id} className="card product-card" style={{ display: 'flex', flexDirection: 'column' }}>
+              <div className="product-image">
                 <img
                   src={prod.imagen_url || 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=400&q=80'}
                   alt={prod.nombre}
@@ -100,7 +106,7 @@ export default function Productos() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0084c7' }}>{prod.codigo}</span>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0084c7' }}>{prod.categoria} · {prod.codigo}</span>
                 <span className={`badge ${prod.estatus === 'Existencia' ? 'badge-success' : 'badge-danger'}`}>
                   {prod.estatus === 'Existencia' ? 'En Existencia' : 'Agotado'}
                 </span>

@@ -11,6 +11,7 @@ export const getProductos = async (req, res) => {
       where[Op.or] = [
         { nombre: { [Op.like]: `%${search}%` } },
         { codigo: { [Op.like]: `%${search}%` } },
+        { categoria: { [Op.like]: `%${search}%` } },
         { descripcion: { [Op.like]: `%${search}%` } }
       ];
     }

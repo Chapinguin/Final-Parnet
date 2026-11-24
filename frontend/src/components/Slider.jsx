@@ -39,7 +39,7 @@ export default function Slider() {
   const slide = slides[current];
 
   return (
-    <div className="slider-container">
+    <div className={`slider-container slider-slide-${current}`} aria-live="polite">
       <div className="slider-slide">
         <span className="slider-tag">{slide.tag}</span>
         <h2>{slide.title}</h2>
