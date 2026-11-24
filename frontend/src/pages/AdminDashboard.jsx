@@ -12,23 +12,57 @@ import {
   ArcElement
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
-import { Package, MessageSquareText, Newspaper, ShieldCheck } from 'lucide-react';
+import { AlertCircle, Package, MessageSquareText, Newspaper, ShieldCheck } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setError('');
+
     api.get('/analytics/dashboards')
-      .then((res) => setData(res.data))
-      .catch((err) => console.error('Error cargando dashboards:', err))
-      .finally(() => setLoading(false));
-  }, []);
+      .then((res) => {
+        if (active) setData(res.data);
+      })
+      .catch((requestError) => {
+        if (!active) return;
+        setData(null);
+        setError(
+          requestError.response?.status === 401
+            ? 'Tu sesión expiró. Inicia sesión nuevamente para consultar los dashboards.'
+            : requestError.response?.data?.message || 'No se pudieron cargar los dashboards.'
+        );
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [retry]);
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '3rem', color: '#64748b' }}>Cargando analítica de dashboards...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="form-feedback form-feedback-error" role="alert">
+        <AlertCircle size={18} />
+        <span>{error}</span>
+        <button className="btn btn-outline" onClick={() => setRetry((attempt) => attempt + 1)}>
+          Reintentar
+        </button>
+      </div>
+    );
   }
 
   // Configuración de Gráfico 1: Servicios por Área
