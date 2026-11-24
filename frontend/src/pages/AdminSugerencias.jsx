@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { FileSpreadsheet, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { AlertCircle, FileSpreadsheet, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function AdminSugerencias() {
   const [sugerencias, setSugerencias] = useState([]);
@@ -8,17 +8,21 @@ export default function AdminSugerencias() {
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState('');
+  const [error, setError] = useState('');
 
   const fetchSugerencias = async (currentPage = 1) => {
     try {
       setLoading(true);
+      setError('');
       const res = await api.get(`/sugerencias?page=${currentPage}&limit=8`);
       setSugerencias(res.data.data);
       setPage(res.data.page);
       setTotalPages(res.data.totalPages);
       setTotal(res.data.total);
     } catch (err) {
-      console.error(err);
+      setSugerencias([]);
+      setError(err.response?.data?.message || 'No se pudieron cargar las sugerencias.');
     } finally {
       setLoading(false);
     }
@@ -28,16 +32,40 @@ export default function AdminSugerencias() {
     fetchSugerencias(page);
   }, [page]);
 
-  const handleExportExcel = () => {
-    window.open(`${api.defaults.baseURL}/sugerencias/export/excel`, '_blank');
-  };
+  const handleExport = async (format) => {
+    setError('');
+    setExporting(format);
 
-  const handleExportPdf = () => {
-    window.open(`${api.defaults.baseURL}/sugerencias/export/pdf`, '_blank');
+    try {
+      const response = await api.get(`/sugerencias/export/${format}`, { responseType: 'blob' });
+      const fileUrl = window.URL.createObjectURL(response.data);
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = format === 'excel' ? 'Sugerencias_Parnet.xlsx' : 'Reporte_Sugerencias_Parnet.pdf';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => window.URL.revokeObjectURL(fileUrl), 1000);
+    } catch (requestError) {
+      setError(
+        requestError.response?.status === 401
+          ? 'Tu sesión expiró. Inicia sesión nuevamente para exportar.'
+          : `No se pudo exportar a ${format === 'excel' ? 'Excel' : 'PDF'}. Inténtalo de nuevo.`
+      );
+    } finally {
+      setExporting('');
+    }
   };
 
   return (
     <div>
+      {error && (
+        <div className="form-feedback form-feedback-error" role="alert">
+          <AlertCircle size={18} />
+          <span>{error}</span>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h2 style={{ fontSize: '1.8rem', color: '#002b49', fontWeight: 800 }}>Listado de Sugerencias Paginadas</h2>
@@ -45,11 +73,21 @@ export default function AdminSugerencias() {
         </div>
 
         <div style={{ display: 'flex', gap: '0.8rem' }}>
-          <button onClick={handleExportExcel} className="btn btn-outline" style={{ color: '#16a34a', borderColor: '#86efac' }}>
-            <FileSpreadsheet size={16} /> Exportar a Excel (.xlsx)
+          <button
+            onClick={() => handleExport('excel')}
+            className="btn btn-outline"
+            style={{ color: '#16a34a', borderColor: '#86efac' }}
+            disabled={Boolean(exporting)}
+          >
+            <FileSpreadsheet size={16} /> {exporting === 'excel' ? 'Exportando...' : 'Exportar a Excel (.xlsx)'}
           </button>
-          <button onClick={handleExportPdf} className="btn btn-outline" style={{ color: '#dc2626', borderColor: '#fca5a5' }}>
-            <FileText size={16} /> Exportar a PDF
+          <button
+            onClick={() => handleExport('pdf')}
+            className="btn btn-outline"
+            style={{ color: '#dc2626', borderColor: '#fca5a5' }}
+            disabled={Boolean(exporting)}
+          >
+            <FileText size={16} /> {exporting === 'pdf' ? 'Exportando...' : 'Exportar a PDF'}
           </button>
         </div>
       </div>
