@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { Plus, Edit2, Trash2, FileSpreadsheet, Check, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileSpreadsheet, Check, Printer, X } from 'lucide-react';
 
 export default function AdminProductos() {
   const [productos, setProductos] = useState([]);
@@ -270,11 +270,18 @@ export default function AdminProductos() {
 
       {/* Modal de Reporte de Stock */}
       {reporteModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
-          <div style={{ background: '#ffffff', padding: '2rem', borderRadius: '8px', width: '90%', maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div className="stock-report-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
+          <div className="stock-report-content" style={{ background: '#ffffff', padding: '2rem', borderRadius: '8px', width: '90%', maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
               <h3 style={{ color: '#002b49' }}>Reporte General de Productos y Stock</h3>
-              <button onClick={() => setReporteModalOpen(false)} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem' }}><X size={16} /></button>
+              <div className="no-print" style={{ display: 'flex', gap: '0.5rem' }}>
+                <button onClick={() => window.print()} className="btn btn-outline">
+                  <Printer size={16} /> Imprimir
+                </button>
+                <button onClick={() => setReporteModalOpen(false)} className="btn btn-outline" style={{ padding: '0.2rem 0.5rem' }} aria-label="Cerrar reporte">
+                  <X size={16} />
+                </button>
+              </div>
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.2rem' }}>
