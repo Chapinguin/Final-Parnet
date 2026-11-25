@@ -24,7 +24,13 @@ export default function ProtectedRoute({ children }) {
       })
       .catch((error) => {
         if (!active) return;
-        setStatus(error.response?.status === 401 ? 'unauthenticated' : 'error');
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          localStorage.removeItem('parnet_token');
+          localStorage.removeItem('parnet_user');
+          setStatus('unauthenticated');
+          return;
+        }
+        setStatus('error');
       });
 
     return () => {

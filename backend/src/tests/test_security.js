@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import databaseConnection from '../config/Database.js';
 import { Usuario } from '../models/index.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 async function ejecutarPruebasSeguridad() {
   console.log('===============================================================');
@@ -39,6 +40,37 @@ async function ejecutarPruebasSeguridad() {
     throw new Error('Fallo al decodificar claims del token JWT');
   }
   console.log('   - Token verificado y decodificado exitosamente.');
+
+  let adminPermitido = false;
+  authMiddleware(
+    { headers: { authorization: `Bearer ${token}` } },
+    { status: () => ({ json: () => {} }) },
+    () => { adminPermitido = true; }
+  );
+  if (!adminPermitido) throw new Error('Fallo: se rechazó un token de administrador');
+  console.log('   - Token de administrador autorizado por el middleware.');
+
+  const tokenNoAdmin = jwt.sign(
+    { id: admin.id, username: 'usuario', rol: 'USER' },
+    secret,
+    { expiresIn: '1h' }
+  );
+  let statusNoAdmin = null;
+  let noAdminPermitido = false;
+  authMiddleware(
+    { headers: { authorization: `Bearer ${tokenNoAdmin}` } },
+    {
+      status: (status) => {
+        statusNoAdmin = status;
+        return { json: () => {} };
+      }
+    },
+    () => { noAdminPermitido = true; }
+  );
+  if (statusNoAdmin !== 403 || noAdminPermitido) {
+    throw new Error('Fallo: el middleware no rechazó un token sin rol de administrador');
+  }
+  console.log('   - Token sin rol administrador rechazado correctamente.');
 
   // 3. Probar rechazo de token adulterado
   let tokenInvalidoRechazado = false;

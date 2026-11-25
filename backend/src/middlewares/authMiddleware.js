@@ -15,6 +15,13 @@ export const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, secret);
+    if (decoded.rol !== 'ADMIN') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acceso restringido a administradores.'
+      });
+    }
+
     req.user = decoded;
     next();
   } catch (error) {

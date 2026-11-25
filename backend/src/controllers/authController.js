@@ -29,6 +29,13 @@ export const login = async (req, res) => {
       });
     }
 
+    if (usuario.rol !== 'ADMIN') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acceso restringido a administradores.'
+      });
+    }
+
     const secret = process.env.JWT_SECRET || 'ParnetIngenieriaSecret2026!';
     const token = jwt.sign(
       {
