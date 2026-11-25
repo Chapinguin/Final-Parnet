@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { Plus, Edit2, Trash2, FileSpreadsheet, Check, Printer, X } from 'lucide-react';
+import { AlertCircle, Plus, Edit2, Trash2, FileSpreadsheet, Check, Printer, X } from 'lucide-react';
 
 export default function AdminProductos() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formError, setFormError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [reporteModalOpen, setReporteModalOpen] = useState(false);
   const [reporteStock, setReporteStock] = useState(null);
@@ -24,10 +28,12 @@ export default function AdminProductos() {
   const fetchProductos = async () => {
     try {
       setLoading(true);
+      setError('');
       const res = await api.get('/productos');
       setProductos(res.data);
     } catch (err) {
-      console.error(err);
+      setProductos([]);
+      setError(err.response?.data?.message || 'No se pudo cargar el catálogo de productos.');
     } finally {
       setLoading(false);
     }
@@ -38,6 +44,7 @@ export default function AdminProductos() {
   }, []);
 
   const handleOpenCreate = () => {
+    setFormError('');
     setForm({
       id: null,
       codigo: '',
@@ -53,6 +60,7 @@ export default function AdminProductos() {
   };
 
   const handleOpenEdit = (p) => {
+    setFormError('');
     setForm(p);
     setModalOpen(true);
   };
@@ -60,16 +68,20 @@ export default function AdminProductos() {
   const handleDelete = async (id) => {
     if (window.confirm('¿Seguro de eliminar este producto del inventario?')) {
       try {
+        setError('');
         await api.delete(`/productos/${id}`);
-        fetchProductos();
+        await fetchProductos();
       } catch (err) {
-        alert('Error al eliminar producto.');
+        setError(err.response?.data?.message || 'No se pudo eliminar el producto.');
       }
     }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
+    setFormError('');
+    setSaving(true);
+
     try {
       if (form.id) {
         await api.put(`/productos/${form.id}`, form);
@@ -77,19 +89,26 @@ export default function AdminProductos() {
         await api.post('/productos', form);
       }
       setModalOpen(false);
-      fetchProductos();
-    } catch (err) {
-      alert('Error guardando producto. Verifique los campos.');
+      await fetchProductos();
+    } catch (requestError) {
+      setFormError(requestError.response?.data?.message || 'No se pudo guardar el producto. Verifica los datos.');
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleVerReporteStock = async () => {
+    setError('');
+    setReportLoading(true);
+
     try {
       const res = await api.get('/productos/admin/reporte-stock');
       setReporteStock(res.data);
       setReporteModalOpen(true);
-    } catch (err) {
-      alert('Error cargando reporte de inventario.');
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || 'No se pudo cargar el reporte de inventario.');
+    } finally {
+      setReportLoading(false);
     }
   };
 
@@ -102,14 +121,21 @@ export default function AdminProductos() {
         </div>
 
         <div style={{ display: 'flex', gap: '0.8rem' }}>
-          <button onClick={handleVerReporteStock} className="btn btn-outline">
-            <FileSpreadsheet size={16} /> Reporte General de Stock
+          <button onClick={handleVerReporteStock} className="btn btn-outline" disabled={reportLoading}>
+            <FileSpreadsheet size={16} /> {reportLoading ? 'Cargando reporte...' : 'Reporte General de Stock'}
           </button>
           <button onClick={handleOpenCreate} className="btn btn-navy">
             <Plus size={16} /> Nuevo Producto
           </button>
         </div>
       </div>
+
+      {error && (
+        <div className="form-feedback form-feedback-error" role="alert">
+          <AlertCircle size={18} />
+          <span>{error}</span>
+        </div>
+      )}
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: '3rem' }}>Cargando catálogo...</div>
@@ -127,7 +153,13 @@ export default function AdminProductos() {
               </tr>
             </thead>
             <tbody>
-              {productos.map((p) => (
+              {productos.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', color: '#64748b', padding: '1.5rem' }}>
+                    No hay productos registrados.
+                  </td>
+                </tr>
+              ) : productos.map((p) => (
                 <tr key={p.id}>
                   <td><strong>{p.codigo}</strong></td>
                   <td>{p.nombre}</td>
@@ -162,6 +194,12 @@ export default function AdminProductos() {
             <h3 style={{ marginBottom: '1.2rem', color: '#002b49' }}>
               {form.id ? 'Editar Producto' : 'Registrar Nuevo Producto'}
             </h3>
+            {formError && (
+              <div className="form-feedback form-feedback-error" role="alert">
+                <AlertCircle size={18} />
+                <span>{formError}</span>
+              </div>
+            )}
             <form onSubmit={handleSave}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className="form-group">
@@ -219,6 +257,7 @@ export default function AdminProductos() {
                   <input
                     type="number"
                     step="0.01"
+                    min="0"
                     className="form-input"
                     required
                     value={form.precio}
@@ -260,8 +299,10 @@ export default function AdminProductos() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem', marginTop: '1.5rem' }}>
-                <button type="button" onClick={() => setModalOpen(false)} className="btn btn-outline">Cancelar</button>
-                <button type="submit" className="btn btn-navy">Guardar Producto</button>
+                <button type="button" onClick={() => setModalOpen(false)} className="btn btn-outline" disabled={saving}>Cancelar</button>
+                <button type="submit" className="btn btn-navy" disabled={saving}>
+                  {saving ? 'Guardando...' : 'Guardar Producto'}
+                </button>
               </div>
             </form>
           </div>
