@@ -1,23 +1,27 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import appConfig from './config/AppConfig.js';
 import databaseConnection from './config/Database.js';
 import apiRouter from './routes/index.js';
 import { runSeeders } from './database/seeders.js';
-
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = appConfig.port;
 
 // Middlewares
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => {
+    const allowedOrigins = appConfig.corsOrigins;
+    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));

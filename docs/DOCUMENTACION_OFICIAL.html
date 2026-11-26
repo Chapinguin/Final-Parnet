@@ -28,11 +28,13 @@
   .portada {
     page-break-after: always;
     text-align: center;
-    padding-top: 6cm;
-    min-height: 22cm;
+    box-sizing: border-box;
+    height: 20.5cm;
+    padding-top: 2.5cm;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 3cm;
   }
 
   .portada-header {
@@ -148,6 +150,9 @@
     font-size: 9.5pt;
   }
 
+  thead { display: table-header-group; }
+  tr { page-break-inside: avoid; }
+
   th {
     background: #002b49;
     color: #ffffff;
@@ -166,6 +171,13 @@
   tr:nth-child(even) td {
     background: #f8fafc;
   }
+
+  table.gantt { table-layout: fixed; font-size: 8pt; }
+  table.gantt th, table.gantt td { padding: 0.16cm 0.12cm; text-align: center; overflow-wrap: anywhere; }
+  table.gantt th:first-child, table.gantt td:first-child { width: 34%; text-align: left; }
+  table.gantt th:nth-child(2), table.gantt td:nth-child(2) { width: 9%; }
+  table.gantt th:nth-child(n+3), table.gantt td:nth-child(n+3) { width: 9.5%; }
+
 
   /* Cajas de notas y códigos */
   .callout {
@@ -301,7 +313,7 @@
     <tr>
       <td><strong>RF-08</strong></td>
       <td>Formulario de Contacto</td>
-      <td>Envío institucional de mensajes por correo electrónico.</td>
+      <td>Envío al buzón institucional mediante Resend. El formulario solo confirma la recepción cuando el proveedor acepta el mensaje; requiere una API key y un dominio remitente verificado.</td>
     </tr>
     <tr>
       <td><strong>RF-09</strong></td>
@@ -321,7 +333,7 @@
     <tr>
       <td><strong>RF-12</strong></td>
       <td>Contador de Visitas</td>
-      <td>Contador persistente de accesos y estimación de usuarios conectados concurrentes en tiempo real.</td>
+      <td>Visitas persistentes por ruta y sesiones concurrentes identificadas por UUID con latido cada minuto; una sesión expira del conteo tras dos minutos sin actividad.</td>
     </tr>
   </tbody>
 </table>
@@ -333,6 +345,9 @@
   <li><strong>Patrón de Diseño Singleton:</strong> Conexión única y compartida de la base de datos relacional.</li>
   <li><strong>ORM Obligatorio:</strong> Sequelize para abstracción y consistencia de datos relacionales.</li>
 </ul>
+
+<h2>1.3 Configuración para correo de contacto</h2>
+<p>El envío se realiza con Resend mediante variables de entorno. Se requiere una API key y un dominio remitente verificado; el ejemplo de configuración está en <code>backend/.env.example</code>. Sin credenciales válidas, la API informa un error y no confirma el envío.</p>
 
 <!-- PUNTO 2 -->
 <h1>2. Diseño y Arquitectura de Software (-5 pts no entregarlo)</h1>
@@ -362,7 +377,7 @@
 
 <h2>2.2 Implementación del Patrón de Diseño Creacional: SINGLETON</h2>
 <p>
-  Para dar cumplimiento a la rúbrica oficial de 5 puntos correspondiente al patrón Singleton, se implementó la clase <code>DatabaseConnection</code> en el archivo <code>backend/src/config/Database.js</code>. Este patrón garantiza que toda la aplicación comparta una única instancia del motor de base de datos Sequelize, evitando fugas de memoria o saturación de sockets de conexión:
+  Para dar cumplimiento a la rúbrica oficial de 5 puntos correspondiente al patrón Singleton, se implementaron <code>DatabaseConnection</code> (<code>backend/src/config/Database.js</code>) y <code>AppConfig</code> (<code>backend/src/config/AppConfig.js</code>). La primera comparte la instancia Sequelize; la segunda centraliza la configuración del servidor y carga las variables de entorno antes de inicializar la conexión:
 </p>
 <pre>
 class DatabaseConnection {
@@ -516,6 +531,13 @@ export default databaseConnectionInstance;
       <td>NOT NULL</td>
       <td>Contenido textual exportable a Excel/PDF.</td>
     </tr>
+    <tr>
+      <td rowspan="3"><strong>sesiones_activas</strong></td>
+      <td><code>session_id</code></td><td>VARCHAR(36)</td><td>PK, UUID</td>
+      <td>Identificador de sesión de navegador.</td>
+    </tr>
+    <tr><td><code>ruta</code></td><td>VARCHAR(200)</td><td>NOT NULL</td><td>Última ruta visitada.</td></tr>
+    <tr><td><code>last_seen</code></td><td>DATETIME</td><td>NOT NULL</td><td>Marca temporal del último latido para contar sesiones activas.</td></tr>
   </tbody>
 </table>
 
@@ -530,6 +552,7 @@ export default databaseConnectionInstance;
   <li><code>PdfService</code>: Encapsula la lógica de maquetación vectorial en <code>PDFKit</code> para emitir fichas técnicas profesionales con encabezados institucionales, paleta corporativa y pie de página.</li>
   <li><code>ExcelService</code>: Encapsula la librería <code>ExcelJS</code> para dar estilo formal a los reportes de sugerencias con celdas de encabezado con color de marca y anchos automáticos.</li>
   <li><code>CaptchaService</code>: Clase gestora de retos antibot con expiración automática periódica cada 10 minutos.</li>
+  <li><code>AppConfig</code>: Singleton que carga las variables de entorno y centraliza los parámetros del servidor, la base de datos, CORS, JWT y correo.</li>
 </ul>
 
 <h2>4.2 Estructura del Proyecto Monorepo</h2>
@@ -537,13 +560,13 @@ export default databaseConnectionInstance;
 Final-Parnet/
 ├── backend/
 │   ├── src/
-│   │   ├── config/ (Singleton Database.js)
+│   │   ├── config/ (Singleton Database.js y AppConfig.js)
 │   │   ├── controllers/ (auth, productos, servicios, sugerencias, etc.)
 │   │   ├── database/ (seeders.js con datos iniciales)
 │   │   ├── middlewares/ (authMiddleware.js)
 │   │   ├── models/ (Usuario, Producto, ServicioSolicitud, etc.)
 │   │   ├── routes/ (index.js y submódulos REST)
-│   │   ├── services/ (PdfService, ExcelService, CaptchaService)
+│   │   ├── services/ (PdfService, ExcelService, CaptchaService, ContactService)
 │   │   ├── tests/ (test_flow.js, test_security.js)
 │   │   └── server.js
 │   └── package.json
@@ -566,24 +589,23 @@ Final-Parnet/
 
 <h2>5.1 Suite de Flujo Funcional (<code>npm run test:flow</code>)</h2>
 <div class="callout">
-  <strong>Resultado de la ejecución:</strong>
+  <strong>Casos incluidos en la suite (ejecutar antes de entregar):</strong>
   <ul>
-    <li>✅ Conexión Singleton autenticada exitosamente contra SQLite.</li>
-    <li>✅ Búsqueda y filtrado de catálogo de productos verificado (Cableado, Fibra, Switches).</li>
-    <li>✅ Generación de reto gráfico SVG y validación de coincidencia de token CAPTCHA.</li>
-    <li>✅ Registro transaccional de solicitud de servicio técnico con asignación de folio único.</li>
-    <li>✅ Generación binaria y maquetación de la Ficha Técnica PDF verificada.</li>
+    <li>Conexión Singleton a SQLite.</li>
+    <li>Búsqueda y filtrado del catálogo por categoría.</li>
+    <li>Generación SVG y validación de CAPTCHA.</li>
+    <li>Registro de solicitud de servicio y folio.</li>
+    <li>Generación de la ficha técnica PDF.</li>
   </ul>
 </div>
 
 <h2>5.2 Suite de Seguridad y Autenticación (<code>npm run test:security</code>)</h2>
 <div class="callout">
-  <strong>Resultado de la ejecución:</strong>
+  <strong>Casos incluidos en la suite (ejecutar antes de entregar):</strong>
   <ul>
-    <li>✅ Verificación de contraseñas mediante algoritmo unidireccional <code>bcrypt</code>.</li>
-    <li>✅ Rechazo garantizado ante contraseñas inválidas.</li>
-    <li>✅ Emisión, firma criptográfica y decodificación de tokens de sesión <code>jsonwebtoken</code> (JWT).</li>
-    <li>✅ Detección y rechazo inmediato de tokens manipulados o alterados.</li>
+    <li>Verificación de contraseñas mediante <code>bcrypt</code> y rechazo de claves inválidas.</li>
+    <li>Emisión, firma y verificación de tokens <code>jsonwebtoken</code> (JWT).</li>
+    <li>Rechazo de tokens alterados y control de roles administrativos.</li>
   </ul>
 </div>
 
@@ -622,45 +644,30 @@ npm run dev               # Portal web activo en http://localhost:5173
 <!-- PUNTO 7 -->
 <h1>7. Diagrama de Gantt y Asignación de Tareas (-50 pts no entregarlo)</h1>
 <p>
-  Para dar cumplimiento estricto al <strong>Punto 7 de la rúbrica oficial (-50 puntos si falta)</strong>, se presenta la matriz de responsabilidades y flujo de avance funcional por etapas entre los tres desarrolladores:
+  Para cubrir el <strong>Punto 7 de la rúbrica oficial (-50 puntos si falta)</strong>, se asigna duración semanal estimada a las tareas de cada integrante. W1 es la primera semana desde el inicio acordado por el equipo; se deben añadir las fechas calendario reales antes de entregar, ya que el repositorio no conserva una fecha verificable de inicio:
 </p>
 
-<table>
+<table class="gantt">
   <thead>
     <tr>
-      <th style="width: 20%;">Fase / Etapa</th>
-      <th style="width: 27%;">Sebastian Chapa (chapabranch)</th>
-      <th style="width: 27%;">Frida (fridabranch)</th>
-      <th style="width: 26%;">Job (jobbranch)</th>
+      <th>Tarea / Responsable</th><th>Duración</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>W6</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td><strong>Fase 1: Cimientos y Arquitectura</strong></td>
-      <td>• Setup monorepo y .gitignore.<br>• Singleton de BD Sequelize.<br>• Modelos ORM y Seeders.<br>• Contrato de API REST.</td>
-      <td>• Maquetación base en React.<br>• Estructura de navegación.<br>• Paleta institucional PSD.<br>• Componente Slider de inicio.</td>
-      <td>• Diseño de flujo de login admin.<br>• Guardia de rutas privadas.<br>• Pantalla de autenticación.<br>• Componente Login UI.</td>
-    </tr>
-    <tr>
-      <td><strong>Fase 2: Módulos Operacionales</strong></td>
-      <td>• Endpoints REST de Productos.<br>• Servicio de Ficha Técnica PDF.<br>• Endpoints de Sugerencias y CAPTCHA.<br>• Servicio de solicitud de servicio.</td>
-      <td>• Catálogo público de productos.<br>• Formulario de sugerencias.<br>• Formulario de servicios por área.<br>• Formulario de contacto email.</td>
-      <td>• CRUD de catálogo de productos.<br>• Pantalla de sugerencias.<br>• Control de estatus de stock.<br>• Gestión de imágenes.</td>
-    </tr>
-    <tr>
-      <td><strong>Fase 3: Analítica y Multimedia</strong></td>
-      <td>• Contador de visitas en vivo.<br>• Endpoints para Dashboards BI.<br>• Servicio exportador a Excel.</td>
-      <td>• Integración Video (2-4 min).<br>• Reproductor de Audio técnico.<br>• Sección de clientes con links.<br>• Tablero dinámico de noticias.</td>
-      <td>• Exportación Excel y PDF.<br>• Dashboard 1 (Servicios).<br>• Dashboard 2 (Catálogo).<br>• Reporte general de stock.</td>
-    </tr>
-    <tr>
-      <td><strong>Fase 4: Integración y Cierre</strong></td>
-      <td>• Suites automatizadas de test.<br>• Script de empaquetado ZIP.<br>• Documentación técnica 1 al 7.</td>
-      <td>• Verificación responsiva móvil.<br>• Pruebas cross-browser.<br>• Validación de formularios.</td>
-      <td>• Pruebas de flujos admin.<br>• Cierre de sesión y seguridad.<br>• Ensayos de exposición.</td>
-    </tr>
+    <tr><td>Chapa: arquitectura, ORM y contrato API</td><td>1 sem.</td><td>■</td><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td>Frida: layout, navegación, slider y catálogo</td><td>3 sem.</td><td>■</td><td>■</td><td>■</td><td></td><td></td><td></td></tr>
+    <tr><td>Job: login, JWT, rutas privadas y CRUD</td><td>3 sem.</td><td>■</td><td>■</td><td>■</td><td></td><td></td><td></td></tr>
+    <tr><td>Chapa: productos, CAPTCHA, formularios y PDF</td><td>2 sem.</td><td></td><td>■</td><td>■</td><td></td><td></td><td></td></tr>
+    <tr><td>Frida: servicios, sugerencias y contacto</td><td>2 sem.</td><td></td><td>■</td><td>■</td><td></td><td></td><td></td></tr>
+    <tr><td>Job: sugerencias paginadas y exportaciones</td><td>2 sem.</td><td></td><td></td><td>■</td><td>■</td><td></td><td></td></tr>
+    <tr><td>Chapa: visitas, presencia y métricas</td><td>1 sem.</td><td></td><td></td><td></td><td>■</td><td></td><td></td></tr>
+    <tr><td>Frida: clientes, multimedia y noticias</td><td>2 sem.</td><td></td><td></td><td></td><td>■</td><td>■</td><td></td></tr>
+    <tr><td>Job: reporte de stock y dashboards</td><td>2 sem.</td><td></td><td></td><td></td><td>■</td><td>■</td><td></td></tr>
+    <tr><td>Todos: integración, pruebas y entrega</td><td>1 sem.</td><td></td><td></td><td></td><td></td><td></td><td>■</td></tr>
   </tbody>
 </table>
+
+<p>Las duraciones son estimaciones relativas para hacer visible la carga de trabajo. La verificación de navegadores y la ejecución de pruebas deben acompañarse de resultados reales en el paquete final.</p>
 
 <p style="margin-top: 1.5cm; text-align: center; color: #64748b; font-size: 9pt; border-top: 1px solid #e2e8f0; padding-top: 0.5cm;">
   Documento generado para la entrega final de <strong>Parnet Ingeniería</strong> · Universidad Autónoma de Coahuila · Facultad de Sistemas

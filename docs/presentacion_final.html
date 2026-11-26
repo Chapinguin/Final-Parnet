@@ -72,7 +72,7 @@
     <div class="card c-amber">
       <h3>🛡️ Criterios Críticos de Calificación</h3>
       <ul>
-        <li><strong>Diagrama de Gantt / Flujo (-50 pts si falta):</strong> Asignaciones y fases operativas sin bloqueos.</li>
+        <li><strong>Diagrama de Gantt (-50 pts si falta):</strong> Tareas asignadas por integrante con duración semanal y semanas de ejecución; las fechas calendario se completan con el acuerdo real del equipo.</li>
         <li><strong>Documentación 1 al 7 (-5 pts c/u si falta):</strong> Análisis, Arquitectura, BD, POO, Pruebas, Implementación.</li>
         <li><strong>Prohibición estricta de PHP:</strong> Arquitectura moderna Node.js / Express con clases y POO.</li>
         <li><strong>Patrón Singleton:</strong> Administrador de conexión a base de datos relacional.</li>
@@ -160,7 +160,7 @@
       <tr>
         <td><strong>visitas</strong></td>
         <td>id, ip, userAgent, ruta, created_at</td>
-        <td>Contador en vivo de visitas y usuarios conectados concurrentes.</td>
+        <td>Visitas por ruta y sesiones activas que reportan latido cada minuto, con vencimiento a los dos minutos.</td>
       </tr>
     </tbody>
   </table>
@@ -174,20 +174,19 @@
     <div class="card c-green">
       <h3>🧪 Suite de Flujo: <code>npm run test:flow</code></h3>
       <ul>
-        <li>✅ Conexión Singleton autenticada exitosamente.</li>
-        <li>✅ Búsqueda y filtrado de catálogo de productos verificado.</li>
-        <li>✅ Generación y validación temporal de tokens antibot CAPTCHA.</li>
-        <li>✅ Registro transaccional de solicitudes de servicio con asignación de folio.</li>
-        <li>✅ Generación binaria y maquetación de la Ficha Técnica oficial en PDF.</li>
+    <li>Suite automatizada disponible; registrar el resultado de ejecución para la entrega final.</li>
+        <li>Casos cubiertos: búsqueda y filtrado de catálogo.</li>
+        <li>Generación y validación temporal de CAPTCHA.</li>
+        <li>Registro de solicitudes y generación de folio.</li>
+        <li>Generación de ficha técnica en PDF.</li>
       </ul>
     </div>
     <div class="card c-amber">
       <h3>🔒 Suite de Seguridad: <code>npm run test:security</code></h3>
       <ul>
-        <li>✅ Cifrado irreversible con <code>bcrypt</code> verificado para cuenta admin.</li>
-        <li>✅ Rechazo garantizado ante contraseñas inválidas.</li>
-        <li>✅ Emisión, firma criptográfica y decodificación de tokens JWT.</li>
-        <li>✅ Detección y rechazo de tokens adulterados o expirados.</li>
+        <li>Casos cubiertos: contraseñas con <code>bcrypt</code> y rechazo de claves incorrectas.</li>
+        <li>Emisión y firma de tokens JWT.</li>
+        <li>Rechazo de tokens alterados y control de roles.</li>
       </ul>
     </div>
   </div>

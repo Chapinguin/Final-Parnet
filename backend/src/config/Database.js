@@ -1,9 +1,5 @@
 import { Sequelize } from 'sequelize';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import appConfig from './AppConfig.js';
 
 /**
  * Patrón de Diseño: SINGLETON
@@ -15,12 +11,10 @@ class DatabaseConnection {
       return DatabaseConnection.instance;
     }
 
-    const storagePath = process.env.DB_STORAGE || path.resolve(__dirname, '../../database.sqlite');
-
     this.sequelize = new Sequelize({
       dialect: 'sqlite',
-      storage: storagePath,
-      logging: process.env.NODE_ENV === 'test' ? false : false,
+      storage: appConfig.databaseStorage,
+      logging: false,
       define: {
         timestamps: true,
         underscored: true

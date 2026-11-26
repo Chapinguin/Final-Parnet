@@ -1,27 +1,26 @@
 import { Sequelize } from 'sequelize';
-import { Visita, ServicioSolicitud, Producto } from '../models/index.js';
+import { Visita, SesionActiva, ServicioSolicitud, Producto } from '../models/index.js';
+
+const PRESENCE_TTL_MS = 2 * 60 * 1000;
+const isSessionId = (value) => typeof value === 'string'
+  && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 
 export const registrarYObtenerVisitas = async (req, res) => {
   try {
-    // Registrar la visita actual
+    // Cada consulta representa una vista de página.
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
     await Visita.create({
       ip: String(ip).substring(0, 45),
       userAgent: (req.headers['user-agent'] || '').substring(0, 250),
-      ruta: req.query.ruta || '/'
+      ruta: String(req.query.ruta || '/').slice(0, 100)
     });
 
     const totalVisitas = await Visita.count();
-    // Simulación estimada de usuarios conectados en los últimos 15 min + base
-    const conexionesRecientes = await Visita.count({
+    const usuariosConectados = await SesionActiva.count({
       where: {
-        created_at: {
-          [Sequelize.Op.gte]: new Date(Date.now() - 15 * 60 * 1000)
-        }
+        lastSeen: { [Sequelize.Op.gte]: new Date(Date.now() - PRESENCE_TTL_MS) }
       }
     });
-
-    const usuariosConectados = Math.max(3, conexionesRecientes + 1);
 
     return res.json({
       totalVisitas,
@@ -29,6 +28,30 @@ export const registrarYObtenerVisitas = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: 'Error al contabilizar visitas.' });
+  }
+};
+
+export const registrarPresencia = async (req, res) => {
+  const { sessionId, ruta } = req.body || {};
+  if (!isSessionId(sessionId)) {
+    return res.status(400).json({ message: 'Identificador de sesión inválido.' });
+  }
+
+  try {
+    const activeSince = new Date(Date.now() - PRESENCE_TTL_MS);
+    await SesionActiva.destroy({ where: { lastSeen: { [Sequelize.Op.lt]: activeSince } } });
+    await SesionActiva.upsert({
+      sessionId,
+      ruta: typeof ruta === 'string' ? ruta.slice(0, 200) : '/',
+      lastSeen: new Date()
+    });
+    const usuariosConectados = await SesionActiva.count({
+      where: { lastSeen: { [Sequelize.Op.gte]: activeSince } }
+    });
+    return res.json({ usuariosConectados });
+  } catch (error) {
+    console.error('Error al actualizar presencia:', error);
+    return res.status(500).json({ message: 'No se pudo actualizar la presencia.' });
   }
 };
 
