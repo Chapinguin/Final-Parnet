@@ -24,6 +24,9 @@ build/
 Thumbs.db
 *.swp
 
+# Entregables ZIP
+Parnet_Ingenieria_EntregaFinal_*.zip
+
 # IDEs
 .vscode/
 .idea/
