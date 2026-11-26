@@ -93,6 +93,7 @@ export default function Home() {
               Escuche las recomendaciones de nuestros ingenieros sobre protección contra sobretensiones y buenas prácticas en cableado.
             </p>
             <audio controls style={{ width: '100%', marginBottom: '1rem' }}>
+              <source src="/audio_parnet.mp3" type="audio/mpeg" />
               <source src="/audio_parnet.wav" type="audio/wav" />
               Su navegador no soporta el elemento de audio.
             </audio>

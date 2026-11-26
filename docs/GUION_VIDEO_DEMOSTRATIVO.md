@@ -114,3 +114,4 @@ Todas las capturas en alta resolución (1280x950) están disponibles en `docs/sc
 7. [07_admin_dashboard_graficos.png](screenshots/07_admin_dashboard_graficos.png) — Los 2 Dashboards con gráficos de Chart.js.
 8. [08_admin_productos_crud.png](screenshots/08_admin_productos_crud.png) — Mantenimiento CRUD de productos y stock.
 9. [09_admin_sugerencias_excel_pdf.png](screenshots/09_admin_sugerencias_excel_pdf.png) — Paginación y exportación Excel/PDF.
+
