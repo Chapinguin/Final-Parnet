@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import appConfig from '../config/AppConfig.js';
 
 export const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -11,10 +12,8 @@ export const authMiddleware = (req, res, next) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = process.env.JWT_SECRET || 'ParnetIngenieriaSecret2026!';
-
   try {
-    const decoded = jwt.verify(token, secret);
+    const decoded = jwt.verify(token, appConfig.jwtSecret);
     if (decoded.rol !== 'ADMIN') {
       return res.status(403).json({
         success: false,

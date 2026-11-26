@@ -72,7 +72,7 @@ Basado en el éxito de la arquitectura de *TicketDeTurno*, se replica la estruct
   - `exceljs` o `xlsx` para la exportación de sugerencias a hojas de cálculo.
   - `chart.js` o `recharts` para los 2 dashboards interactivos.
 - **Patrón de Diseño Obligatorio:**
-  - **Singleton:** Implementado en la clase de conexión a la base de datos `DatabaseConnection.js` y el gestor de configuración global `AppConfig.js`.
+  - **Singleton:** Implementado en la clase de conexión a la base de datos `backend/src/config/Database.js` y el gestor global `backend/src/config/AppConfig.js`.
 
 ---
 
@@ -98,7 +98,7 @@ Basado en el éxito de la arquitectura de *TicketDeTurno*, se replica la estruct
 **Objetivo:** Proveer los cimientos para que Frida y Job puedan consumir datos reales o mockeados sin dependencias bloqueantes.
 - **Entregables específicos:**
   1. Estructura base del proyecto (`backend/`, `frontend/`, `docs/`, `scripts/`).
-  2. Implementación de **Singleton** para la conexión ORM (`Database.js`).
+  2. Implementación de **Singleton** para la conexión ORM (`Database.js`) y configuración global (`AppConfig.js`).
   3. Definición de modelos Sequelize con POO:
      - `Usuario` (id, username, password, email, rol).
      - `Producto` (id, codigo, nombre, descripcion, especificaciones, categoria, imagen_url, precio, estatus [Existencia/Agotado]).
@@ -163,10 +163,27 @@ Basado en el éxito de la arquitectura de *TicketDeTurno*, se replica la estruct
 
 ---
 
-## 5. Flujo de Trabajo y Cronograma de Ejecución (Sin Timestamps)
+## 5. Diagrama de Gantt y Cronograma de Ejecución
 
-> [!NOTE]
-> Siguiendo el acuerdo del equipo, el flujo de trabajo se organiza por **fases y etapas secuenciales de avance funcional** (sin fechas calendario ni marcas de tiempo rígidas), permitiendo trabajo asíncrono y desacoplado entre los tres desarrolladores.
+El siguiente Gantt asigna tareas y duración estimada a cada integrante. **W1** representa la primera semana a partir del inicio acordado por el equipo; cada columna equivale a una semana de trabajo. El repositorio no conserva fechas calendario confiables del inicio, por lo que este cronograma es relativo y debe acompañarse de las fechas reales acordadas al presentar la documentación.
+
+| Integrante / tarea | Duración | W1 | W2 | W3 | W4 | W5 | W6 |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Sebastian Chapa — Arquitectura, ORM, modelos y contrato API** | 1 sem. | ■ | | | | | |
+| **Frida — Layout público, navegación y slider** | 2 sem. | ■ | ■ | | | | |
+| **Job — Login, JWT y protección de rutas** | 2 sem. | ■ | ■ | | | | |
+| **Chapa — API de productos, búsqueda y CAPTCHA** | 1 sem. | | ■ | | | | |
+| **Frida — Catálogo y ficha técnica PDF** | 2 sem. | | ■ | ■ | | | |
+| **Job — CRUD de productos e imágenes** | 2 sem. | | ■ | ■ | | | |
+| **Chapa — Formularios, persistencia y servicio PDF** | 1 sem. | | | ■ | | | |
+| **Frida — Formularios de servicios y sugerencias con CAPTCHA** | 1 sem. | | | ■ | | | |
+| **Job — Paginación y exportación de sugerencias** | 2 sem. | | | ■ | ■ | | |
+| **Chapa — Visitas, presencia y métricas de analítica** | 1 sem. | | | | ■ | | |
+| **Frida — Clientes, video, audio y noticias** | 2 sem. | | | | ■ | ■ | |
+| **Job — Reporte de stock y dos dashboards** | 2 sem. | | | | ■ | ■ | |
+| **Todos — Integración, pruebas cruzadas y entrega** | 1 sem. | | | | | | ■ |
+
+**Entregables de cierre (W6):** ejecución del backend y frontend, pruebas de flujo y seguridad, verificación en Chrome/Firefox/Edge/Safari, revisión de medios y empaquetado limpio. La comprobación debe quedar registrada junto con la versión final entregada.
 
 ```mermaid
 flowchart TD
@@ -207,7 +224,7 @@ flowchart TD
 
 | Fase | Sebastian Chapa (`chapabranch`) | Frida (`fridabranch`) | Job (`jobbranch`) |
 |:---|:---|:---|:---|
-| **Fase 1: Cimientos y Arquitectura** | • Inicialización de monorepo (`backend/`, `frontend/`, `docs/`).<br>• Conexión Singleton SQLite/Sequelize (`Database.js`).<br>• Modelos ORM y Seeders con datos iniciales.<br>• Contrato de API REST (`docs/CONTRATO_API.md`). | • Maquetación inicial React Vite con CSS acorde al PSD.<br>• Estructura de navegación y componentes compartidos.<br>• Implementación del componente Slider de cabecera. | • Arquitectura de autenticación administrativa.<br>• Componente Login con CAPTCHA.<br>• Definición de rutas privadas protegidas (`/admin/*`). |
+| **Fase 1: Cimientos y Arquitectura** | • Inicialización de monorepo (`backend/`, `frontend/`, `docs/`).<br>• Singletons de configuración (`AppConfig.js`) y conexión SQLite/Sequelize (`Database.js`).<br>• Modelos ORM y Seeders con datos iniciales.<br>• Contrato de API REST (`docs/CONTRATO_API.md`). | • Maquetación inicial React Vite con CSS acorde al PSD.<br>• Estructura de navegación y componentes compartidos.<br>• Implementación del componente Slider de cabecera. | • Arquitectura de autenticación administrativa.<br>• Componente Login con CAPTCHA.<br>• Definición de rutas privadas protegidas (`/admin/*`). |
 | **Fase 2: Módulos Operacionales** | • Endpoints REST de Productos, Búsqueda y Filtros.<br>• Servicio generador de la Ficha Técnica en PDF.<br>• Endpoints de Sugerencias y Solicitud de Servicios.<br>• Endpoint de generación y validación de CAPTCHA. | • Vista de Búsqueda de Productos con descarga de PDF técnico.<br>• Formulario de Solicitud de Servicios por área con CAPTCHA.<br>• Formulario de Sugerencias internas con CAPTCHA.<br>• Formulario de Contacto por correo. | • Tabla administrativa CRUD de Productos (altas, bajas, cambios, estatus).<br>• Pantalla de Sugerencias con paginación.<br>• Mantenimiento del catálogo de imágenes. |
 | **Fase 3: Analítica, Multimedia y Reportes** | • Contador de visitas y usuarios activos concurrentes.<br>• Endpoint de métricas agregadas para los 2 Dashboards.<br>• Soporte y ajustes de API para frontend. | • Integración de Video explicativo (2-4 min) y Audio ambiental.<br>• Sección Clientes con enlaces web reales.<br>• Render dinámico de Tablero de Noticias.<br>• Ajustes de diseño responsivo. | • Módulo de exportación a Excel (`.xlsx`) y PDF para sugerencias.<br>• Construcción de Dashboard 1 (Servicios por Área con gráficos).<br>• Construcción de Dashboard 2 (Catálogo de Productos con gráficos).<br>• Reporte general de productos (Existencia/Agotado). |
 | **Fase 4: Integración y Entrega** | • Revisión y merge de PRs de `fridabranch` y `jobbranch` a `main`.<br>• Pruebas de endpoints automatizadas.<br>• Script de empaquetado `scripts/empaquetar.sh`. | • Verificación visual cross-browser (Chrome, Firefox, Edge).<br>• Pruebas de formularios y validaciones de usuario. | • Verificación de flujos administrativos completos.<br>• Generación de reportes de prueba. |

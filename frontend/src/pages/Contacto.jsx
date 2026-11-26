@@ -44,7 +44,7 @@ export default function Contacto() {
         {enviado && (
           <div style={{ padding: '1rem', background: '#dcfce7', color: '#166534', borderRadius: '6px', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <CheckCircle size={18} />
-            <span>Su mensaje ha sido enviado exitosamente a la bandeja de contacto de PARNET Ingeniería.</span>
+            <span>El equipo de PARNET Ingeniería recibió tu mensaje y se pondrá en contacto contigo.</span>
           </div>
         )}
         {error && <div className="form-feedback form-feedback-error" role="alert"><AlertCircle size={18} />{error}</div>}

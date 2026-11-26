@@ -5,6 +5,7 @@ import { ServicioSolicitud } from './ServicioSolicitud.js';
 import { Sugerencia } from './Sugerencia.js';
 import { Noticia } from './Noticia.js';
 import { Visita } from './Visita.js';
+import { SesionActiva } from './SesionActiva.js';
 
 const sequelize = databaseConnection.getSequelize();
 
@@ -16,6 +17,7 @@ export {
   ServicioSolicitud,
   Sugerencia,
   Noticia,
-  Visita
+  Visita,
+  SesionActiva
 };
 

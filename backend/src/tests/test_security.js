@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import databaseConnection from '../config/Database.js';
 import { Usuario } from '../models/index.js';
 import { authMiddleware } from '../middlewares/authMiddleware.js';
+import appConfig from '../config/AppConfig.js';
 
 async function ejecutarPruebasSeguridad() {
   console.log('===============================================================');
@@ -27,7 +28,7 @@ async function ejecutarPruebasSeguridad() {
 
   // 2. Probar generación y validación de tokens JWT
   console.log('\n📌 2. Verificando Tokens de Autenticación (JWT):');
-  const secret = process.env.JWT_SECRET || 'ParnetIngenieriaSecret2026!';
+  const secret = appConfig.jwtSecret;
   const token = jwt.sign(
     { id: admin.id, username: admin.username, rol: admin.rol },
     secret,

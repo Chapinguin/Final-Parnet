@@ -31,3 +31,7 @@ Aplicación web empresarial desarrollada para **Parnet Ingeniería** como proyec
 2. **Sincronización:** Hacer `git pull origin main` antes de iniciar cada sesión.
 3. **Integración:** Crear Pull Requests hacia `main` al finalizar componentes funcionales.
 4. **Commits:** Redactados en español siguiendo el estándar convencional (`feat:`, `fix:`, `docs:`, `refactor:`).
+
+## ✉️ Configuración de correo de contacto
+
+El formulario envía los mensajes mediante Resend. Copia `backend/.env.example` a `backend/.env`, configura `RESEND_API_KEY`, `CONTACT_EMAIL_FROM` con un dominio verificado y `CONTACT_EMAIL_TO` con el buzón receptor. No subas `backend/.env` al repositorio.

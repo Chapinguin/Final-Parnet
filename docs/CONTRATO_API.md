@@ -196,7 +196,8 @@ Este documento define la especificación técnica de la API REST del backend par
 ## 7. Módulo de Analítica y Dashboards (`/api/analytics`)
 
 ### `GET /api/analytics/visitas`
-- **Descripción:** Contador global de visitas y usuarios conectados concurrentes.
+- **Descripción:** Registra una vista de página y devuelve el total histórico de visitas y las sesiones con latido en los últimos dos minutos.
+- **Query Params:** `ruta` (opcional): ruta pública que se está visitando.
 - **Respuesta (200 OK):**
   ```json
   {
@@ -204,6 +205,11 @@ Este documento define la especificación técnica de la API REST del backend par
     "usuariosConectados": 14
   }
   ```
+
+### `POST /api/analytics/presencia`
+- **Descripción:** Registra o renueva el latido de una sesión de navegador y elimina las sesiones vencidas. Una sesión se considera conectada durante dos minutos desde su último latido.
+- **Body:** `{ "sessionId": "UUID generado por el navegador", "ruta": "/productos" }`
+- **Respuesta (200 OK):** `{ "usuariosConectados": 3 }`
 
 ### `GET /api/analytics/dashboards` *(Protegido)*
 - **Descripción:** Métricas preprocesadas para renderizar los 2 gráficos de Chart.js en el panel administrativo.
@@ -229,4 +235,12 @@ Este documento define la especificación técnica de la API REST del backend par
     }
   }
   ```
+
+## 8. Contacto por correo (`/api/contacto`)
+
+### `POST /api/contacto`
+- **Descripción:** Valida y envía el mensaje al correo corporativo a través de Resend. El correo del visitante se establece como dirección de respuesta.
+- **Body:** `{ "nombre": "Ana López", "email": "ana@empresa.com", "telefono": "8441234567", "asunto": "Cotización", "mensaje": "Solicito información..." }`
+- **Respuesta:** `202 Accepted` cuando el proveedor acepta el correo; `503` cuando faltan credenciales y `502` ante un rechazo o error del proveedor.
+- **Configuración:** `RESEND_API_KEY`, `CONTACT_EMAIL_FROM` (dominio verificado en Resend) y `CONTACT_EMAIL_TO` en `backend/.env`.
 

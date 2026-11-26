@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Usuario } from '../models/index.js';
+import appConfig from '../config/AppConfig.js';
 
 export const login = async (req, res) => {
   try {
@@ -36,7 +37,6 @@ export const login = async (req, res) => {
       });
     }
 
-    const secret = process.env.JWT_SECRET || 'ParnetIngenieriaSecret2026!';
     const token = jwt.sign(
       {
         id: usuario.id,
@@ -44,7 +44,7 @@ export const login = async (req, res) => {
         email: usuario.email,
         rol: usuario.rol
       },
-      secret,
+      appConfig.jwtSecret,
       { expiresIn: '8h' }
     );
 

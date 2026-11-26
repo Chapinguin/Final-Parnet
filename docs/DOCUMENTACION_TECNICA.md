@@ -44,7 +44,7 @@ El proyecto **Parnet Ingeniería** es una plataforma web integral desarrollada p
 El sistema se organiza en dos capas independientes conectadas mediante una **API REST**:
 1. **Capa de Presentación (Frontend SPA):** React 18, Vite, React Router DOM, Chart.js y estilos CSS institucionales.
 2. **Capa de Servicios y Negocio (Backend MVC POO):** Node.js, Express, Middlewares de autenticación JWT y Capa de Servicios (`PdfService`, `ExcelService`, `CaptchaService`).
-3. **Capa de Datos y Persistencia:** ORM Sequelize administrado por el Singleton `DatabaseConnection`.
+3. **Capa de Datos y Persistencia:** ORM Sequelize administrado por el Singleton `DatabaseConnection`; la configuración compartida se centraliza en `AppConfig`.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -66,7 +66,7 @@ El sistema se organiza en dos capas independientes conectadas mediante una **API
 ```
 
 ### 2.2 Patrón de Diseño: SINGLETON
-Implementado en `backend/src/config/Database.js`. Previene la apertura redundante de conexiones a la base de datos, garantizando una instancia global reutilizada por todos los modelos:
+Implementado para la base de datos en `backend/src/config/Database.js` y para la configuración global en `backend/src/config/AppConfig.js`. Ambos módulos reutilizan una instancia única; AppConfig carga `.env` antes de que Sequelize lea su ruta de almacenamiento y centraliza puerto, CORS, JWT y correo:
 
 ```javascript
 class DatabaseConnection {
@@ -78,6 +78,17 @@ class DatabaseConnection {
     DatabaseConnection.instance = this;
   }
   getSequelize() { return this.sequelize; }
+}
+```
+
+```javascript
+class AppConfig {
+  constructor() {
+    if (AppConfig.instance) return AppConfig.instance;
+    AppConfig.instance = this;
+  }
+  get port() { return Number(process.env.PORT) || 4000; }
+  get jwtSecret() { return process.env.JWT_SECRET || 'ParnetIngenieriaSecret2026!'; }
 }
 ```
 
@@ -128,6 +139,14 @@ class DatabaseConnection {
 
 ---
 
+La tabla `sesiones_activas` completa el esquema para presencia concurrente: su identificador UUID es clave primaria, y conserva la ruta actual y la fecha del último latido. El contador considera conectadas las sesiones actualizadas durante los dos minutos anteriores.
+
+| Tabla | Campo | Tipo | Restricciones / propósito |
+|:---|:---|:---|:---|
+| `sesiones_activas` | `session_id` | `VARCHAR(36)` | PK; UUID de la sesión del navegador |
+| `sesiones_activas` | `ruta` | `VARCHAR(200)` | Ruta que reportó el último latido |
+| `sesiones_activas` | `last_seen` | `DATETIME` | Fecha del último latido; ventana de actividad de dos minutos |
+
 ## 4. Programación y Buenas Prácticas (POO) (-5 pts si no se entrega)
 
 1. **Clases y Modelos POO:** Todos los modelos extienden de `Model` de Sequelize con atributos tipados y encapsulados.
@@ -168,6 +187,10 @@ El sistema incluye una suite de pruebas automatizadas ejecutables vía consola:
 ### Procedimiento de Puesta en Marcha
 
 ```bash
+# 0. Configurar contacto por correo (requiere API key y dominio verificado en Resend)
+cp backend/.env.example backend/.env
+# Completar RESEND_API_KEY, CONTACT_EMAIL_FROM y CONTACT_EMAIL_TO
+
 # 1. Puesta en marcha del Backend (Terminal 1)
 cd backend
 npm install
@@ -191,5 +214,13 @@ El script genera un archivo `.zip` excluyendo carpetas pesadas (`node_modules`),
 
 ## 7. Diagrama de Gantt y Asignación de Roles (-50 pts si no se entrega)
 
-La asignación detallada de responsabilidades y el flujo de avance por fases se encuentra completamente especificado en el documento maestro:
+El plan maestro contiene la asignación de tareas y su duración semanal estimada. El calendario está expresado en semanas relativas porque el repositorio no registra fechas de inicio verificables:
 👉 **[PLAN_DE_TRABAJO.md](../PLAN_DE_TRABAJO.md)**
+
+### Configuración del correo
+
+El endpoint de contacto envía mensajes por Resend. Copie `backend/.env.example` a `backend/.env`, configure una clave API y una dirección remitente de dominio verificado por el proveedor. El destinatario se establece en `CONTACT_EMAIL_TO`. Sin estos valores, la API responde `503` y la interfaz no anuncia un envío exitoso.
+
+### Presencia de visitantes
+
+El frontend genera un UUID por sesión de pestaña y envía un latido cada minuto. El backend guarda el último latido en `sesiones_activas`, elimina registros vencidos y cuenta sesiones activas dentro de una ventana de dos minutos. El total de visitas se incrementa por ruta navegada.
