@@ -15,6 +15,7 @@ zip -r "$OUTPUT_ZIP" . \
   -x "node_modules/*" \
   -x "*/dist/*" \
   -x "dist/*" \
+  -x "*.zip" \
   -x "*.git*" \
   -x "*.env" \
   -x "*.sqlite" \
