@@ -77,11 +77,11 @@ export default function Home() {
               style={{ width: '100%', maxHeight: '280px', borderRadius: '6px', background: '#000000' }}
               poster="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80"
             >
-              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
+              <source src="/video_parnet.mp4" type="video/mp4" />
               Su navegador no soporta reproducción de video HTML5.
             </video>
             <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.4rem' }}>
-              Duración: 2:45 min · Video demostrativo de estándares y objetivos PARNET.
+              Video institucional: Estándares de calidad y objetivos PARNET Ingeniería.
             </div>
           </div>
 
@@ -93,7 +93,7 @@ export default function Home() {
               Escuche las recomendaciones de nuestros ingenieros sobre protección contra sobretensiones y buenas prácticas en cableado.
             </p>
             <audio controls style={{ width: '100%', marginBottom: '1rem' }}>
-              <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+              <source src="/audio_parnet.wav" type="audio/wav" />
               Su navegador no soporta el elemento de audio.
             </audio>
             <div style={{ background: '#e0f2fe', padding: '0.8rem', borderRadius: '6px', fontSize: '0.85rem', color: '#0369a1' }}>
